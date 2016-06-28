@@ -92,6 +92,7 @@ gb3 <- gbutton("Run & Save",container = gp1,handler = function(h,...){
   write.csv(mr_data,sub(".csv$","_mrtRel.csv",filename),row.names = FALSE)
   options(scipen=0)
   gmessage("convert OK",icon = "info",parent = mw) 
+  dispose(mw)
   
 })
 gp2<- ggroup(container= mw, use.scrollwindow = TRUE, horizontal = FALSE)
