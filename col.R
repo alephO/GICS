@@ -84,7 +84,14 @@ stage2 <- function(){
   
   gp2_option <- gframe(container = gp_option)
   glabel("CLuster Method:",container = gp2_option)
-  gclumethod <- gdroplist(c("K-mean"),container = gp2_option)
+  gclumethod <- gdroplist(c("K-mean","AGNES"),container = gp2_option, 
+                          handler=function(h,...){
+                            if(svalue(gclumethod,index = T)==1){
+                              enabled(groupnum)<-T
+                            } else if (svalue(gclumethod,index = T)==2){
+                              enabled(groupnum)<-F
+                            }
+                          })
   #apply(true_matrix,2,any)
   glabel("Corelation Method",container = gp2_option)
   gcormethod <- gdroplist(c("pearson"),container = gp2_option)
@@ -162,7 +169,11 @@ stage2 <- function(){
   addHandlerClicked(gbstart,function(h,...){
     new_data<<-included_data[svalue(gss):svalue(gse),which(apply(!is.na(included_data[svalue(gss):svalue(gse),]),2,all))]
     distance <<- 1 - cor(new_data)
-    clu <<- pam(distance, svalue(groupnum), diss = TRUE)
+    if(svalue(gclumethod,index = T)==1){
+      clu <<- pam(distance, svalue(groupnum), diss = TRUE)
+    } else if (svalue(gclumethod,index = T)==2){
+      clu <<- agnes(distance, diss = TRUE)
+    }
     plot(clu)
     result<-vector(mode = "list",length = svalue(groupnum))
     for(i in 1:svalue(groupnum)){
